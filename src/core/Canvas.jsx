@@ -1,4 +1,5 @@
 import PropTypes from "prop-types";
+
 import {
 	createContext,
 	useCallback,
@@ -7,8 +8,10 @@ import {
 	useMemo,
 	useRef,
 } from "react";
+
+import useTicks from "./hooks/useTicks";
+
 import { useRenderer } from "./Renderer";
-import useActions from "./hooks/useActions";
 
 const CanvasContext = createContext();
 export const useCanvas = () => useContext(CanvasContext);
@@ -16,32 +19,28 @@ export const useCanvas = () => useContext(CanvasContext);
 const Canvas = (props) => {
 	const { children, fullScreen } = props;
 
-	const [addCanvasAction, removeCanvasAction, runCanvasActions] =
-		useActions();
-	const { addRendererAction, removeRendererAction } = useRenderer();
+	const [addCanvasTick, removeCanvasTick, applyCanvasTicks] = useTicks();
+
+	const { addRendererTick, removeRendererTick } = useRenderer();
 
 	const ref = useRef();
 
 	const canvas = ref.current;
 	const context = useMemo(() => canvas?.getContext("2d"), [canvas]);
 
-	const content = useMemo(
-		() => (canvas && context ? children : null),
-		[canvas, children, context]
+	const value = useMemo(
+		() => ({ canvas, context, addCanvasTick, removeCanvasTick }),
+		[canvas, context, addCanvasTick, removeCanvasTick]
 	);
 
 	const resize = useCallback(() => {
 		if (ref.current && fullScreen) {
 			ref.current.width = window.innerWidth;
 			ref.current.height = window.innerHeight;
-			runCanvasActions();
-		}
-	}, [fullScreen, runCanvasActions]);
 
-	const value = useMemo(
-		() => ({ canvas, context, addCanvasAction, removeCanvasAction }),
-		[canvas, context, addCanvasAction, removeCanvasAction]
-	);
+			applyCanvasTicks(value);
+		}
+	}, [applyCanvasTicks, fullScreen, value]);
 
 	const tick = useCallback(() => {
 		if (!canvas) {
@@ -49,8 +48,9 @@ const Canvas = (props) => {
 		}
 
 		canvas.width |= 0;
-		runCanvasActions();
-	}, [canvas, runCanvasActions]);
+
+		applyCanvasTicks(value);
+	}, [applyCanvasTicks, canvas, value]);
 
 	useEffect(() => {
 		if (ref.current && fullScreen) {
@@ -65,13 +65,18 @@ const Canvas = (props) => {
 
 	useEffect(() => {
 		if (canvas) {
-			addRendererAction(tick);
+			addRendererTick(tick);
 
 			return () => {
-				removeRendererAction(tick);
+				removeRendererTick(tick);
 			};
 		}
-	}, [addRendererAction, canvas, removeRendererAction, tick]);
+	}, [addRendererTick, removeRendererTick, canvas, tick]);
+
+	const content = useMemo(
+		() => (canvas && context ? children : null),
+		[canvas, children, context]
+	);
 
 	return (
 		<CanvasContext.Provider value={value}>

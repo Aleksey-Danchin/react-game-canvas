@@ -7,8 +7,8 @@ import {
 	useState,
 } from "react";
 
-import useActions from "./hooks/useActions";
 import useOnce from "./hooks/useOnce";
+import useTicks from "./hooks/useTicks";
 
 const RendererContext = createContext();
 export const useRenderer = () => useContext(RendererContext);
@@ -16,8 +16,8 @@ export const useRenderer = () => useContext(RendererContext);
 const Renderer = (props) => {
 	const { children } = props;
 
-	const [addRendererAction, removeRendererAction, runRendererActions] =
-		useActions();
+	const [addRendererTick, removeRendererTick, applyRendererTicks] =
+		useTicks();
 
 	const [state, setState] = useState({
 		timestamp: 0,
@@ -28,8 +28,8 @@ const Renderer = (props) => {
 	});
 
 	const value = useMemo(
-		() => ({ ...state, addRendererAction, removeRendererAction }),
-		[state, addRendererAction, removeRendererAction]
+		() => ({ ...state, addRendererTick, removeRendererTick }),
+		[state, addRendererTick, removeRendererTick]
 	);
 
 	const tick = useCallback((timestamp = 0) => {
@@ -49,8 +49,7 @@ const Renderer = (props) => {
 	}, []);
 
 	useOnce(tick);
-
-	useEffect(runRendererActions, [runRendererActions, value]);
+	useEffect(() => applyRendererTicks(), [applyRendererTicks, value]);
 
 	return (
 		<RendererContext.Provider value={value}>

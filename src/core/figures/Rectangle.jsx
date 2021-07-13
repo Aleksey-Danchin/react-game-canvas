@@ -1,17 +1,21 @@
-import { useCallback, useEffect } from "react";
 import PropTypes from "prop-types";
+import { useCallback, useEffect, useMemo } from "react";
 import { useCanvas } from "../Canvas";
-// import Figure from "./Figure";
 
-const Circle = (props) => {
-	const { x, y, r, lineWidth, stroke, fill } = props;
+const Rectangle = (props) => {
+	const { x, y, width, height, anchorX, anchorY, lineWidth, stroke, fill } =
+		props;
+
+	const positionX = useMemo(() => x + anchorX * width, [anchorX, width, x]);
+	const positionY = useMemo(() => y + anchorY * height, [anchorY, height, y]);
 
 	const { addCanvasTick, removeCanvasTick } = useCanvas();
 
 	const tick = useCallback(
 		({ context }) => {
 			context.beginPath();
-			context.arc(x, y, r, 0, Math.PI * 2);
+			context.moveTo(positionX, positionY);
+			context.rect(positionX, positionY, width, height);
 			context.lineWidth = lineWidth;
 
 			if (fill) {
@@ -26,7 +30,7 @@ const Circle = (props) => {
 
 			return null;
 		},
-		[fill, lineWidth, r, stroke, x, y]
+		[fill, height, lineWidth, positionX, positionY, stroke, width]
 	);
 
 	useEffect(() => {
@@ -35,20 +39,24 @@ const Circle = (props) => {
 	}, [addCanvasTick, removeCanvasTick, tick]);
 
 	return null;
-	// return <Figure>{tick}</Figure>;
 };
 
-export default Circle;
+export default Rectangle;
 
-Circle.propTypes = {
+Rectangle.propTypes = {
 	x: PropTypes.number.isRequired,
 	y: PropTypes.number.isRequired,
-	r: PropTypes.number.isRequired,
+	width: PropTypes.number.isRequired,
+	height: PropTypes.number.isRequired,
+	anchorX: PropTypes.number.isRequired,
+	anchorY: PropTypes.number.isRequired,
 	lineWidth: PropTypes.number.isRequired,
 	stroke: PropTypes.string,
 	fill: PropTypes.string,
 };
 
-Circle.defaultProps = {
+Rectangle.defaultProps = {
+	anchorX: 0,
+	anchorY: 0,
 	lineWidth: 1,
 };

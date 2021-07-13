@@ -1,5 +1,6 @@
 import Canvas from "./core/Canvas";
 import Circle from "./core/figures/Circle";
+import Rectangle from "./core/figures/Rectangle";
 import { useEffect, useState } from "react";
 import { useRenderer } from "./core/Renderer";
 
@@ -15,8 +16,18 @@ const App = () => {
 				centerX={400}
 				centerY={300}
 				angle={0}
-				rotateSpeed={-15}
+				rotateSpeed={-90}
 				R={200}
+			/>
+
+			<Rectangle
+				x={10}
+				y={10}
+				width={500}
+				height={250}
+				fill="rgba(123, 233, 12, 0.5)"
+				stroke="green"
+				lineWidth={5}
 			/>
 
 			<MovedCircle
@@ -24,7 +35,7 @@ const App = () => {
 				y={100}
 				r={50}
 				stroke="green"
-				fill="red"
+				fill="rgba(255, 0, 0, 0.5)"
 				centerX={400}
 				centerY={300}
 				angle={0}
