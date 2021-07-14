@@ -7,9 +7,8 @@ import {
 	useEffect,
 	useMemo,
 	useRef,
+	useState,
 } from "react";
-
-import useTicks from "./hooks/useTicks";
 
 import { useRenderer } from "./Renderer";
 
@@ -19,28 +18,22 @@ export const useCanvas = () => useContext(CanvasContext);
 const Canvas = (props) => {
 	const { children, fullScreen } = props;
 
-	const [addCanvasTick, removeCanvasTick, applyCanvasTicks] = useTicks();
-
-	const { addRendererTick, removeRendererTick } = useRenderer();
+	const rendererState = useRenderer();
 
 	const ref = useRef();
 
 	const canvas = ref.current;
 	const context = useMemo(() => canvas?.getContext("2d"), [canvas]);
-
-	const value = useMemo(
-		() => ({ canvas, context, addCanvasTick, removeCanvasTick }),
-		[canvas, context, addCanvasTick, removeCanvasTick]
-	);
+	const [canvasState, setCanvasState] = useState({ canvas, context });
 
 	const resize = useCallback(() => {
 		if (ref.current && fullScreen) {
 			ref.current.width = window.innerWidth;
 			ref.current.height = window.innerHeight;
 
-			applyCanvasTicks(value);
+			setCanvasState({ canvas, context });
 		}
-	}, [applyCanvasTicks, fullScreen, value]);
+	}, [canvas, context, fullScreen]);
 
 	const tick = useCallback(() => {
 		if (!canvas) {
@@ -48,9 +41,8 @@ const Canvas = (props) => {
 		}
 
 		canvas.width |= 0;
-
-		applyCanvasTicks(value);
-	}, [applyCanvasTicks, canvas, value]);
+		setCanvasState({ canvas, context });
+	}, [canvas, context]);
 
 	useEffect(() => {
 		if (ref.current && fullScreen) {
@@ -63,23 +55,17 @@ const Canvas = (props) => {
 		}
 	}, [fullScreen, resize]);
 
-	useEffect(() => {
-		if (canvas) {
-			addRendererTick(tick);
+	useEffect(tick, [tick, rendererState]);
 
-			return () => {
-				removeRendererTick(tick);
-			};
-		}
-	}, [addRendererTick, removeRendererTick, canvas, tick]);
+	useEffect(() => setCanvasState({ canvas, context }), [canvas, context]);
 
 	const content = useMemo(
-		() => (canvas && context ? children : null),
-		[canvas, children, context]
+		() => (canvasState.canvas && canvasState.context ? children : null),
+		[canvasState.canvas, canvasState.context, children]
 	);
 
 	return (
-		<CanvasContext.Provider value={value}>
+		<CanvasContext.Provider value={canvasState}>
 			<canvas ref={ref} />
 			{content}
 		</CanvasContext.Provider>

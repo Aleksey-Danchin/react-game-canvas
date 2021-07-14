@@ -25,7 +25,7 @@ const App = () => {
 				y={10}
 				width={500}
 				height={250}
-				fill="rgba(123, 233, 12, 0.5)"
+				fill="rgb(123, 233, 12)"
 				stroke="green"
 				lineWidth={5}
 			/>

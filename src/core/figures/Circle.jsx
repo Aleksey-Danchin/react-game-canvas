@@ -1,41 +1,31 @@
-import { useCallback, useEffect } from "react";
+import { useEffect } from "react";
 import PropTypes from "prop-types";
 import { useCanvas } from "../Canvas";
-// import Figure from "./Figure";
 
 const Circle = (props) => {
 	const { x, y, r, lineWidth, stroke, fill } = props;
 
-	const { addCanvasTick, removeCanvasTick } = useCanvas();
-
-	const tick = useCallback(
-		({ context }) => {
-			context.beginPath();
-			context.arc(x, y, r, 0, Math.PI * 2);
-			context.lineWidth = lineWidth;
-
-			if (fill) {
-				context.fillStyle = fill;
-				context.fill();
-			}
-
-			if (stroke) {
-				context.strokeStyle = stroke;
-				context.stroke();
-			}
-
-			return null;
-		},
-		[fill, lineWidth, r, stroke, x, y]
-	);
+	const canvasState = useCanvas();
 
 	useEffect(() => {
-		addCanvasTick(tick);
-		return () => removeCanvasTick(tick);
-	}, [addCanvasTick, removeCanvasTick, tick]);
+		const { context } = canvasState;
+
+		context.beginPath();
+		context.arc(x, y, r, 0, Math.PI * 2);
+		context.lineWidth = lineWidth;
+
+		if (fill) {
+			context.fillStyle = fill;
+			context.fill();
+		}
+
+		if (stroke) {
+			context.strokeStyle = stroke;
+			context.stroke();
+		}
+	}, [canvasState, fill, lineWidth, r, stroke, x, y]);
 
 	return null;
-	// return <Figure>{tick}</Figure>;
 };
 
 export default Circle;

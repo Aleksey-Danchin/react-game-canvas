@@ -1,14 +1,6 @@
-import {
-	createContext,
-	useCallback,
-	useContext,
-	useEffect,
-	useMemo,
-	useState,
-} from "react";
+import { createContext, useCallback, useContext, useState } from "react";
 
 import useOnce from "./hooks/useOnce";
-import useTicks from "./hooks/useTicks";
 
 const RendererContext = createContext();
 export const useRenderer = () => useContext(RendererContext);
@@ -16,10 +8,7 @@ export const useRenderer = () => useContext(RendererContext);
 const Renderer = (props) => {
 	const { children } = props;
 
-	const [addRendererTick, removeRendererTick, applyRendererTicks] =
-		useTicks();
-
-	const [state, setState] = useState({
+	const [rendererState, setRendererState] = useState({
 		timestamp: 0,
 		pTimestamp: 0,
 		fps: 0,
@@ -27,15 +16,10 @@ const Renderer = (props) => {
 		secondPart: 0,
 	});
 
-	const value = useMemo(
-		() => ({ ...state, addRendererTick, removeRendererTick }),
-		[state, addRendererTick, removeRendererTick]
-	);
-
 	const tick = useCallback((timestamp = 0) => {
 		requestAnimationFrame(tick);
 
-		setState((state) => {
+		setRendererState((state) => {
 			const diff = timestamp - state.pTimestamp;
 
 			return {
@@ -49,10 +33,9 @@ const Renderer = (props) => {
 	}, []);
 
 	useOnce(tick);
-	useEffect(() => applyRendererTicks(), [applyRendererTicks, value]);
 
 	return (
-		<RendererContext.Provider value={value}>
+		<RendererContext.Provider value={rendererState}>
 			{children}
 		</RendererContext.Provider>
 	);
