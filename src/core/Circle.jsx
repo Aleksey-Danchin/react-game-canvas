@@ -4,12 +4,27 @@ import { useCanvas } from "./Canvas";
 import { useContainer } from "./Container";
 
 const Circle = (props) => {
-	const { x, y, r, lineWidth, stroke, fill } = props;
+	const { x, y, r, lineWidth, stroke, fill, opacity, transform } = props;
 
 	const { context } = useCanvas();
 
+	const withRestore = opacity !== 1 || transform;
+
 	const tick = useCallback(() => {
 		context.beginPath();
+
+		if (withRestore) {
+			context.save();
+
+			if (transform) {
+				context.setTransform(...transform);
+			}
+
+			if (opacity !== undefined) {
+				context.globalAlpha *= opacity;
+			}
+		}
+
 		context.arc(x, y, r, 0, Math.PI * 2);
 		context.lineWidth = lineWidth;
 
@@ -22,7 +37,22 @@ const Circle = (props) => {
 			context.strokeStyle = stroke;
 			context.stroke();
 		}
-	}, [context, fill, lineWidth, r, stroke, x, y]);
+
+		if (withRestore) {
+			context.restore();
+		}
+	}, [
+		context,
+		fill,
+		lineWidth,
+		opacity,
+		r,
+		stroke,
+		transform,
+		withRestore,
+		x,
+		y,
+	]);
 
 	useContainer(tick);
 
@@ -38,8 +68,14 @@ Circle.propTypes = {
 	lineWidth: PropTypes.number.isRequired,
 	stroke: PropTypes.string,
 	fill: PropTypes.string,
+	scaleX: PropTypes.number.isRequired,
+	scaleY: PropTypes.number.isRequired,
+	opacity: PropTypes.number,
+	transform: PropTypes.array,
 };
 
 Circle.defaultProps = {
 	lineWidth: 1,
+	scaleX: 1,
+	scaleY: 1,
 };

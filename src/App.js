@@ -9,9 +9,11 @@ import { useRenderer } from "./core/Renderer";
 
 const App = () => {
 	const [angle, setAngle] = useState(-Math.PI / 10);
+	const [opactiy, setOpacity] = useState(1);
 
-	const tick = useCallback(({ secondPart }) => {
+	const tick = useCallback(({ secondPart, timestamp }) => {
 		setAngle((angle) => angle + (secondPart * Math.PI) / 9);
+		setOpacity(Math.abs(Math.cos(timestamp / 1000)));
 	}, []);
 
 	useTick(tick);
@@ -29,7 +31,14 @@ const App = () => {
 			</Canvas>
 
 			<Canvas>
-				<Group x={500} y={500} pivotX={50} pivotY={50} angle={angle}>
+				<Group
+					x={500}
+					y={200}
+					pivotX={50}
+					pivotY={50}
+					angle={angle}
+					opactiy={opactiy}
+				>
 					<Circle
 						x={250}
 						y={250}
@@ -46,6 +55,9 @@ const App = () => {
 						fill="rgb(123, 233, 12)"
 						stroke="green"
 						lineWidth={5}
+						angle={Math.PI / 12}
+						pivotX={10}
+						pivotY={10}
 					/>
 
 					<Circle
@@ -53,7 +65,8 @@ const App = () => {
 						y={100}
 						r={50}
 						stroke="green"
-						fill="rgba(255, 0, 0, 0.5)"
+						fill="red"
+						opacity={0.5}
 					/>
 
 					<Circle
@@ -61,7 +74,8 @@ const App = () => {
 						y={100}
 						r={50}
 						stroke="green"
-						fill="rgba(255, 0, 0, 0.5)"
+						fill="red"
+						opacity={0.5}
 					/>
 
 					<Circle x={0} y={0} r={15} fill="red" />

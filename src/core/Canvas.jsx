@@ -17,7 +17,7 @@ const CanvasContext = createContext();
 export const useCanvas = () => useContext(CanvasContext);
 
 const Canvas = (props) => {
-	const { сleaning, children } = props;
+	const { сleaning, children, ...data } = props;
 	const rendererState = useRenderer();
 
 	const ref = useRef();
@@ -70,7 +70,7 @@ const Canvas = (props) => {
 
 	return (
 		<CanvasContext.Provider value={canvasState}>
-			<Container items={items}>
+			<Container {...data} items={items}>
 				<canvas ref={ref} className={styles.canvas} />
 				{content}
 			</Container>

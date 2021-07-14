@@ -4,8 +4,18 @@ import { useCanvas } from "./Canvas";
 import { Container, useContainer } from "./Container";
 
 const Group = (props) => {
-	const { x, y, scaleX, scaleY, pivotX, pivotY, angle, transform, children } =
-		props;
+	const {
+		x,
+		y,
+		scaleX,
+		scaleY,
+		pivotX,
+		pivotY,
+		angle,
+		transform,
+		opactiy,
+		children,
+	} = props;
 
 	const { context } = useCanvas();
 
@@ -30,6 +40,10 @@ const Group = (props) => {
 			if (scaleX !== 1 || scaleY !== 1) {
 				context.scale(scaleX, scaleY);
 			}
+
+			if (opactiy !== undefined) {
+				context.globalAlpha *= opactiy;
+			}
 		}
 
 		apply();
@@ -48,6 +62,7 @@ const Group = (props) => {
 		transform,
 		x,
 		y,
+		opactiy,
 	]);
 
 	useContainer(tick);
@@ -66,6 +81,7 @@ Group.propTypes = {
 	pivotY: PropTypes.number.isRequired,
 	angle: PropTypes.number.isRequired,
 	transform: PropTypes.array,
+	opactiy: PropTypes.number,
 };
 
 Group.defaultProps = {
