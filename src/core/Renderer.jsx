@@ -7,6 +7,7 @@ import {
 	useState,
 	useEffect,
 } from "react";
+import Container, { useContainer } from "./Container";
 
 import useOnce from "./hooks/useOnce";
 import styles from "./styles.module.css";
@@ -74,6 +75,8 @@ const Renderer = (props) => {
 		realHeight: height,
 	});
 
+	const [items, apply, reset] = useContainer();
+
 	const tick = useCallback((timestamp = 0) => {
 		requestAnimationFrame(tick);
 
@@ -93,11 +96,18 @@ const Renderer = (props) => {
 
 	useOnce(tick);
 
+	useEffect(() => {
+		apply(rendererState);
+		reset();
+	}, [rendererState, apply, reset]);
+
 	return (
 		<RendererContext.Provider value={rendererState}>
-			<div ref={ref} className={styles.renderer}>
-				{children}
-			</div>
+			<Container items={items}>
+				<div ref={ref} className={styles.renderer}>
+					{children}
+				</div>
+			</Container>
 		</RendererContext.Provider>
 	);
 };

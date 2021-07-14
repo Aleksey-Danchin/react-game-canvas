@@ -7,6 +7,7 @@ import {
 	useRef,
 	useState,
 } from "react";
+import Container, { useContainer } from "./Container";
 
 import { useRenderer } from "./Renderer";
 import styles from "./styles.module.css";
@@ -24,29 +25,40 @@ const Canvas = (props) => {
 	const context = useMemo(() => canvas?.getContext("2d"), [canvas]);
 	const [canvasState, setCanvasState] = useState({ canvas, context });
 
-	const tick = useCallback(() => {
-		if (!canvas) {
-			return;
-		}
+	const [items, apply, reset] = useContainer();
 
-		canvas.width |= 0;
-		setCanvasState({ canvas, context });
-	}, [canvas, context]);
+	const tick = useCallback(
+		(data) => {
+			if (!canvas) {
+				return;
+			}
 
-	useEffect(tick, [tick, rendererState]);
+			canvas.width |= 0;
+
+			data = { ...data, ...canvasState };
+
+			apply(data);
+			reset();
+		},
+		[apply, canvas, canvasState, reset]
+	);
+
+	useContainer(tick);
 
 	useEffect(() => setCanvasState({ canvas, context }), [canvas, context]);
+
+	const { realWidth, realHeight } = rendererState;
 
 	useEffect(() => {
 		if (!canvas) {
 			return;
 		}
 
-		canvas.width = rendererState.realWidth;
-		canvas.height = rendererState.realHeight;
+		canvas.width = realWidth;
+		canvas.height = realHeight;
 
-		setCanvasState({ canvas, context });
-	}, [canvas, context, rendererState.realHeight, rendererState.realWidth]);
+		apply(canvasState);
+	}, [apply, canvas, canvasState, context, realHeight, realWidth]);
 
 	const content = useMemo(
 		() => (canvasState.canvas && canvasState.context ? children : null),
@@ -55,8 +67,10 @@ const Canvas = (props) => {
 
 	return (
 		<CanvasContext.Provider value={canvasState}>
-			<canvas ref={ref} className={styles.canvas} />
-			{content}
+			<Container items={items}>
+				<canvas ref={ref} className={styles.canvas} />
+				{content}
+			</Container>
 		</CanvasContext.Provider>
 	);
 };

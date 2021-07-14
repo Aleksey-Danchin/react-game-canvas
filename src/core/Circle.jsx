@@ -1,15 +1,14 @@
-import { useEffect } from "react";
+import { useCallback } from "react";
 import PropTypes from "prop-types";
-import { useCanvas } from "../Canvas";
+import { useCanvas } from "./Canvas";
+import { useContainer } from "./Container";
 
 const Circle = (props) => {
 	const { x, y, r, lineWidth, stroke, fill } = props;
 
-	const canvasState = useCanvas();
+	const { context } = useCanvas();
 
-	useEffect(() => {
-		const { context } = canvasState;
-
+	const tick = useCallback(() => {
 		context.beginPath();
 		context.arc(x, y, r, 0, Math.PI * 2);
 		context.lineWidth = lineWidth;
@@ -23,7 +22,9 @@ const Circle = (props) => {
 			context.strokeStyle = stroke;
 			context.stroke();
 		}
-	}, [canvasState, fill, lineWidth, r, stroke, x, y]);
+	}, [context, fill, lineWidth, r, stroke, x, y]);
+
+	useContainer(tick);
 
 	return null;
 };
