@@ -50,18 +50,18 @@ const Canvas = (props) => {
 
 	useEffect(() => setCanvasState({ canvas, context }), [canvas, context]);
 
-	const { realWidth, realHeight } = rendererState;
+	const { width, height } = rendererState;
 
 	useEffect(() => {
 		if (!canvas) {
 			return;
 		}
 
-		canvas.width = realWidth;
-		canvas.height = realHeight;
+		canvas.width = width;
+		canvas.height = height;
 
 		apply(canvasState);
-	}, [apply, canvas, canvasState, context, realHeight, realWidth]);
+	}, [apply, canvas, canvasState, context, height, width]);
 
 	const content = useMemo(
 		() => (canvasState.canvas && canvasState.context ? children : null),

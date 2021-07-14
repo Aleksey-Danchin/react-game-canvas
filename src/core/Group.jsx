@@ -17,10 +17,14 @@ const Group = (props) => {
 		if (transform) {
 			context.setTransform(...transform);
 		} else {
+			if (x || y) {
+				context.translate(x, y);
+			}
+
 			if (angle) {
 				context.translate(pivotX, pivotY);
 				context.rotate(angle);
-				context.translate(-pivotX + x, -pivotY + y);
+				context.translate(-pivotX, -pivotY);
 			}
 
 			if (scaleX !== 1 || scaleY !== 1) {

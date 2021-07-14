@@ -27,8 +27,8 @@ const Renderer = (props) => {
 
 			setRendererState((state) => ({
 				...state,
-				realWidth: window.innerWidth,
-				realHeight: window.innerHeight,
+				width: window.innerWidth,
+				height: window.innerHeight,
 			}));
 		}
 	}, [fullScreen]);
@@ -44,20 +44,13 @@ const Renderer = (props) => {
 				};
 			}
 
-			if (width !== undefined) {
-				ref.current.style.width = `${width}px`;
-			}
-
-			if (height !== undefined) {
-				ref.current.style.height = `${height}px`;
-			}
-
-			const rect = ref.current.getClientBounding();
+			ref.current.style.width = `${width}px`;
+			ref.current.style.height = `${height}px`;
 
 			setRendererState((state) => ({
 				...state,
-				realWidth: rect.width,
-				realHeight: rect.height,
+				width,
+				height,
 			}));
 		}
 	}, [fullScreen, height, resize, width]);
@@ -119,10 +112,12 @@ export default Renderer;
 Renderer.propTypes = {
 	fullScreen: PropTypes.bool.isRequired,
 
-	width: PropTypes.number,
-	height: PropTypes.number,
+	width: PropTypes.number.isRequired,
+	height: PropTypes.number.isRequired,
 };
 
 Renderer.defaultProps = {
 	fullScreen: false,
+	width: 300,
+	height: 150,
 };
