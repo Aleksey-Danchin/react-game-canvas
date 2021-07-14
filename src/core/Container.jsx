@@ -14,8 +14,8 @@ export const useContainer = (item) => {
 	const itemsRef = useRef([]);
 	const items = itemsRef.current;
 
-	const reset = useCallback(() => {
-		itemsRef.current = [];
+	const reset = useCallback((callback = () => {}) => {
+		callback((itemsRef.current = []));
 	}, []);
 
 	const apply = useCallback((data) => {

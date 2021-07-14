@@ -62,7 +62,11 @@ const Renderer = (props) => {
 		}
 	}, [fullScreen, height, resize, width]);
 
+	const [items, apply, reset] = useContainer();
+
 	const [rendererState, setRendererState] = useState({
+		items,
+
 		timestamp: 0,
 		pTimestamp: 0,
 		fps: 0,
@@ -74,8 +78,6 @@ const Renderer = (props) => {
 		realWidth: width,
 		realHeight: height,
 	});
-
-	const [items, apply, reset] = useContainer();
 
 	const tick = useCallback((timestamp = 0) => {
 		requestAnimationFrame(tick);
@@ -98,9 +100,8 @@ const Renderer = (props) => {
 
 	useEffect(() => {
 		apply(rendererState);
-		reset();
+		reset((items) => setRendererState((state) => ({ ...state, items })));
 	}, [rendererState, apply, reset]);
-
 	return (
 		<RendererContext.Provider value={rendererState}>
 			<Container items={items}>

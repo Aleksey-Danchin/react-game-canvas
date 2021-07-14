@@ -11,12 +11,13 @@ import Container, { useContainer } from "./Container";
 
 import { useRenderer } from "./Renderer";
 import styles from "./styles.module.css";
+import PropTypes from "prop-types";
 
 const CanvasContext = createContext();
 export const useCanvas = () => useContext(CanvasContext);
 
 const Canvas = (props) => {
-	const { children } = props;
+	const { сleaning, children } = props;
 	const rendererState = useRenderer();
 
 	const ref = useRef();
@@ -33,14 +34,16 @@ const Canvas = (props) => {
 				return;
 			}
 
-			canvas.width |= 0;
+			if (сleaning) {
+				canvas.width |= 0;
+			}
 
 			data = { ...data, ...canvasState };
 
 			apply(data);
 			reset();
 		},
-		[apply, canvas, canvasState, reset]
+		[apply, canvas, canvasState, reset, сleaning]
 	);
 
 	useContainer(tick);
@@ -76,3 +79,11 @@ const Canvas = (props) => {
 };
 
 export default Canvas;
+
+Canvas.propTypes = {
+	сleaning: PropTypes.bool.isRequired,
+};
+
+Canvas.defaultProps = {
+	сleaning: true,
+};
