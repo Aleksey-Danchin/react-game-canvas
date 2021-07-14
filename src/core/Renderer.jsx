@@ -100,10 +100,11 @@ const Renderer = (props) => {
 
 	useEffect(() => {
 		apply(rendererState);
-		reset((items) => setRendererState((state) => ({ ...state, items })));
+		reset();
 	}, [rendererState, apply, reset]);
+
 	return (
-		<RendererContext.Provider value={rendererState}>
+		<RendererContext.Provider value={{ ...rendererState, items }}>
 			<Container items={items}>
 				<div ref={ref} className={styles.renderer}>
 					{children}
