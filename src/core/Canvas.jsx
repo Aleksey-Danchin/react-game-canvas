@@ -1,5 +1,3 @@
-import PropTypes from "prop-types";
-
 import {
 	createContext,
 	useCallback,
@@ -11,13 +9,13 @@ import {
 } from "react";
 
 import { useRenderer } from "./Renderer";
+import styles from "./styles.module.css";
 
 const CanvasContext = createContext();
 export const useCanvas = () => useContext(CanvasContext);
 
 const Canvas = (props) => {
-	const { children, fullScreen } = props;
-
+	const { children } = props;
 	const rendererState = useRenderer();
 
 	const ref = useRef();
@@ -25,15 +23,6 @@ const Canvas = (props) => {
 	const canvas = ref.current;
 	const context = useMemo(() => canvas?.getContext("2d"), [canvas]);
 	const [canvasState, setCanvasState] = useState({ canvas, context });
-
-	const resize = useCallback(() => {
-		if (ref.current && fullScreen) {
-			ref.current.width = window.innerWidth;
-			ref.current.height = window.innerHeight;
-
-			setCanvasState({ canvas, context });
-		}
-	}, [canvas, context, fullScreen]);
 
 	const tick = useCallback(() => {
 		if (!canvas) {
@@ -44,20 +33,20 @@ const Canvas = (props) => {
 		setCanvasState({ canvas, context });
 	}, [canvas, context]);
 
-	useEffect(() => {
-		if (ref.current && fullScreen) {
-			resize();
-			window.addEventListener("resize", resize);
-
-			return () => {
-				window.removeEventListener("resize", resize);
-			};
-		}
-	}, [fullScreen, resize]);
-
 	useEffect(tick, [tick, rendererState]);
 
 	useEffect(() => setCanvasState({ canvas, context }), [canvas, context]);
+
+	useEffect(() => {
+		if (!canvas) {
+			return;
+		}
+
+		canvas.width = rendererState.realWidth;
+		canvas.height = rendererState.realHeight;
+
+		setCanvasState({ canvas, context });
+	}, [canvas, context, rendererState.realHeight, rendererState.realWidth]);
 
 	const content = useMemo(
 		() => (canvasState.canvas && canvasState.context ? children : null),
@@ -66,18 +55,10 @@ const Canvas = (props) => {
 
 	return (
 		<CanvasContext.Provider value={canvasState}>
-			<canvas ref={ref} />
+			<canvas ref={ref} className={styles.canvas} />
 			{content}
 		</CanvasContext.Provider>
 	);
 };
 
 export default Canvas;
-
-Canvas.propTypes = {
-	fullScreen: PropTypes.bool.isRequired,
-};
-
-Canvas.defaultProps = {
-	fullScreen: false,
-};

@@ -6,7 +6,7 @@ import { useRenderer } from "./core/Renderer";
 
 const App = () => {
 	return (
-		<Canvas fullScreen>
+		<Canvas>
 			<MovedCircle
 				x={250}
 				y={250}

@@ -7,7 +7,7 @@ import Renderer from "./core/Renderer";
 
 ReactDOM.render(
 	<React.StrictMode>
-		<Renderer>
+		<Renderer fullScreen>
 			<App />
 		</Renderer>
 	</React.StrictMode>,
