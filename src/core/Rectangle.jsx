@@ -1,7 +1,7 @@
 import PropTypes from "prop-types";
 import { useCallback, useMemo } from "react";
-import { useCanvas } from "./Canvas";
-import { useContainer } from "./Container";
+
+import { useCanvas, useContainer } from "./hooks";
 
 const Rectangle = (props) => {
 	const {

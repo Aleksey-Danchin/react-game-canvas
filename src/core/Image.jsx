@@ -1,8 +1,7 @@
 import { useCallback, useMemo } from "react";
-import { useContainer } from "./Container";
 import PropTypes from "prop-types";
-import { useCanvas } from "./Canvas";
-import useImage from "./hooks/useImage";
+
+import { useImage, useCanvas, useContainer } from "./hooks";
 
 const Image = (props) => {
 	const { x, y, frameX, frameY, src } = props;

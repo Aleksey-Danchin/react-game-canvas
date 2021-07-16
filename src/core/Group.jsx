@@ -1,7 +1,8 @@
 import PropTypes from "prop-types";
 import { useCallback } from "react";
-import { useCanvas } from "./Canvas";
-import { Container, useContainer } from "./Container";
+
+import { Container } from "./";
+import { useCanvas, useContainerState, useContainer } from "./hooks";
 
 const Group = (props) => {
 	const {
@@ -19,7 +20,7 @@ const Group = (props) => {
 
 	const { context } = useCanvas();
 
-	const [items, apply, reset] = useContainer();
+	const [items, apply, reset] = useContainerState();
 
 	const tick = useCallback(() => {
 		context.save();

@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { useRenderer } from "../Renderer";
+import { useRenderer } from "./";
 
 const useTick = (callback) => {
 	const { items } = useRenderer();

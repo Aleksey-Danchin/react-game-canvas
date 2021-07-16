@@ -1,20 +1,20 @@
+import PropTypes from "prop-types";
+
 import {
 	createContext,
 	useCallback,
-	useContext,
 	useEffect,
 	useMemo,
 	useRef,
 	useState,
 } from "react";
-import Container, { useContainer } from "./Container";
 
-import { useRenderer } from "./Renderer";
 import styles from "./styles.module.css";
-import PropTypes from "prop-types";
 
-const CanvasContext = createContext();
-export const useCanvas = () => useContext(CanvasContext);
+import { Container } from "./";
+import { useRenderer, useContainerState, useContainer } from "./hooks";
+
+export const CanvasContext = createContext();
 
 const Canvas = (props) => {
 	const { сleaning, children, ...data } = props;
@@ -26,7 +26,7 @@ const Canvas = (props) => {
 	const context = useMemo(() => canvas?.getContext("2d"), [canvas]);
 	const [canvasState, setCanvasState] = useState({ canvas, context });
 
-	const [items, apply, reset] = useContainer();
+	const [items, apply, reset] = useContainerState();
 
 	const tick = useCallback(
 		(data) => {

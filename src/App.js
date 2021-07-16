@@ -1,11 +1,6 @@
-import Canvas from "./core/Canvas";
-import Circle from "./core/Circle";
-import Rectangle from "./core/Rectangle";
-import Group from "./core/Group";
-import Image from "./core/Image";
 import { useCallback, useState } from "react";
-import useTick from "./core/hooks/useTick";
-import { useRenderer } from "./core/Renderer";
+import { Canvas, Circle, Rectangle, Group, Image } from "./core";
+import { useRenderer, useTick } from "./core/hooks";
 
 const App = () => {
 	const [angle, setAngle] = useState(-Math.PI / 10);

@@ -1,19 +1,12 @@
 import PropTypes from "prop-types";
-import {
-	createContext,
-	useCallback,
-	useContext,
-	useRef,
-	useState,
-	useEffect,
-} from "react";
-import Container, { useContainer } from "./Container";
+import { createContext, useCallback, useRef, useState, useEffect } from "react";
 
-import useOnce from "./hooks/useOnce";
+import { useContainerState, useOnce } from "./hooks";
+import { Container } from "./";
+
 import styles from "./styles.module.css";
 
-const RendererContext = createContext();
-export const useRenderer = () => useContext(RendererContext);
+export const RendererContext = createContext();
 
 const Renderer = (props) => {
 	const { width, height, fullScreen, children } = props;
@@ -55,7 +48,7 @@ const Renderer = (props) => {
 		}
 	}, [fullScreen, height, resize, width]);
 
-	const [items, apply, reset] = useContainer();
+	const [items, apply, reset] = useContainerState();
 
 	const [rendererState, setRendererState] = useState({
 		items,

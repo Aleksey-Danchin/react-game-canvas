@@ -1,7 +1,7 @@
 import { useCallback } from "react";
 import PropTypes from "prop-types";
-import { useCanvas } from "./Canvas";
-import { useContainer } from "./Container";
+
+import { useCanvas, useContainer } from "./hooks";
 
 const Circle = (props) => {
 	const { x, y, r, lineWidth, stroke, fill, opacity, transform } = props;
