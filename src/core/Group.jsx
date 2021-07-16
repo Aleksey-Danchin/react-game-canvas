@@ -14,7 +14,7 @@ const Group = (props) => {
 		pivotY,
 		angle,
 		transform,
-		opactiy,
+		opacity,
 		children,
 	} = props;
 
@@ -42,8 +42,8 @@ const Group = (props) => {
 				context.scale(scaleX, scaleY);
 			}
 
-			if (opactiy !== undefined) {
-				context.globalAlpha *= opactiy;
+			if (opacity !== undefined) {
+				context.globalAlpha *= opacity;
 			}
 		}
 
@@ -63,7 +63,7 @@ const Group = (props) => {
 		transform,
 		x,
 		y,
-		opactiy,
+		opacity,
 	]);
 
 	useContainer(tick);
@@ -82,7 +82,7 @@ Group.propTypes = {
 	pivotY: PropTypes.number.isRequired,
 	angle: PropTypes.number.isRequired,
 	transform: PropTypes.array,
-	opactiy: PropTypes.number,
+	opacity: PropTypes.number,
 };
 
 Group.defaultProps = {
