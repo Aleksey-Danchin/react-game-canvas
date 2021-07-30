@@ -1,4 +1,5 @@
 import AnimatedSprite from "./AnimatedSprite";
+import BackgroundTiles from "./BackgroundTiles";
 import Canvas from "./Canvas";
 import Circle from "./Circle";
 import Container from "./Container";
@@ -10,6 +11,7 @@ import Renderer from "./Renderer";
 
 export {
 	AnimatedSprite,
+	BackgroundTiles,
 	Canvas,
 	Circle,
 	Container,

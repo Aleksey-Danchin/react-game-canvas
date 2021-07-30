@@ -1,0 +1,63 @@
+{ "compressionlevel":-1,
+ "editorsettings":
+    {
+     "export":
+        {
+         "target":"..\/..\/"
+        }
+    },
+ "height":5,
+ "infinite":false,
+ "layers":[
+        {
+         "data":[67, 67, 67, 67, 67, 67, 67, 67, 67, 67, 67, 67, 67, 67, 67, 67, 67, 67, 67, 67, 67, 67, 67, 67, 67],
+         "height":5,
+         "id":4,
+         "name":"grass",
+         "opacity":1,
+         "type":"tilelayer",
+         "visible":true,
+         "width":5,
+         "x":0,
+         "y":0
+        }, 
+        {
+         "data":[0, 0, 0, 49, 50, 0, 0, 0, 63, 61, 77, 77, 77, 78, 61, 47, 47, 47, 47, 65, 0, 0, 0, 0, 0],
+         "height":5,
+         "id":5,
+         "name":"way",
+         "opacity":1,
+         "type":"tilelayer",
+         "visible":true,
+         "width":5,
+         "x":0,
+         "y":0
+        }, 
+        {
+         "data":[0, 1, 0, 19, 3, 0, 16, 0, 0, 18, 0, 1, 0, 0, 0, 0, 16, 0, 1, 0, 0, 0, 0, 16, 0],
+         "height":5,
+         "id":6,
+         "name":"tree",
+         "opacity":1,
+         "type":"tilelayer",
+         "visible":true,
+         "width":5,
+         "x":0,
+         "y":0
+        }],
+ "nextlayerid":9,
+ "nextobjectid":1,
+ "orientation":"orthogonal",
+ "renderorder":"right-down",
+ "tiledversion":"1.4.2",
+ "tileheight":32,
+ "tilesets":[
+        {
+         "firstgid":1,
+         "source":"..\/..\/RPG Nature Tileset Autumn.tsx"
+        }],
+ "tilewidth":32,
+ "type":"map",
+ "version":1.4,
+ "width":5
+}

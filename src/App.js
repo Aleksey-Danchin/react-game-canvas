@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import {
 	Canvas,
 	Circle,
@@ -7,20 +7,40 @@ import {
 	Image,
 	Line,
 	AnimatedSprite,
+	BackgroundTiles,
 } from "./core";
 
-import { useRenderer, useTick } from "./core/hooks";
+import { useKeyboard, useRenderer, useTick } from "./core/hooks";
 
 const App = () => {
 	const [angle, setAngle] = useState(-Math.PI / 10);
 	const [opacity, setOpacity] = useState(1);
+	const keyboard = useKeyboard();
+	const [position, setPosition] = useState({ x: 0, y: 0 });
 
-	const tick = useCallback(({ secondPart, timestamp, fps }) => {
-		setAngle((angle) => angle + (secondPart * Math.PI) / 9);
-		setOpacity(Math.abs(Math.cos(timestamp / 1000)));
+	const tick = useCallback(
+		({ secondPart, timestamp, fps }) => {
+			setAngle((angle) => angle + (secondPart * Math.PI) / 9);
+			setOpacity(Math.abs(Math.cos(timestamp / 1000)));
 
-		console.log(fps);
-	}, []);
+			if (keyboard.left) {
+				setPosition((position) => ({ ...position, x: position.x - 1 }));
+			}
+
+			if (keyboard.right) {
+				setPosition((position) => ({ ...position, x: position.x + 1 }));
+			}
+
+			if (keyboard.down) {
+				setPosition((position) => ({ ...position, y: position.y + 1 }));
+			}
+
+			if (keyboard.up) {
+				setPosition((position) => ({ ...position, y: position.y - 1 }));
+			}
+		},
+		[keyboard.down, keyboard.left, keyboard.right, keyboard.up]
+	);
 
 	useTick(tick);
 
@@ -45,10 +65,10 @@ const App = () => {
 		[]
 	);
 
-	const atlasAttack = useMemo(
+	const atlasRun = useMemo(
 		() => ({
-			attack: {
-				duration: 2000,
+			run: {
+				duration: 1200,
 				frames: [
 					[0, 0, 250, 250],
 					[250, 0, 250, 250],
@@ -65,94 +85,23 @@ const App = () => {
 	);
 
 	return (
-		<>
-			<Canvas>
-				<Image
-					src="/src/sun.jpg"
-					width={renderer.width}
-					height={renderer.height}
-				/>
+		<Canvas>
+			<BackgroundTiles
+				x={50}
+				y={50}
+				map="/src/map.json"
+				tiles="/src/autumn.png"
+			/>
 
-				<Line
-					x1={0}
-					y1={0}
-					x2={renderer.width}
-					y2={renderer.height}
-					stroke="white"
-					lineWidth={30}
-				/>
-
-				<AnimatedSprite
-					src="/src/wizard/Sprites/Idle.png"
-					atlas={atlasIdle}
-					action="idle"
-					width={500}
-					height={500}
-				/>
-			</Canvas>
-
-			<Canvas>
-				<Group
-					x={500}
-					y={200}
-					pivotX={50}
-					pivotY={50}
-					angle={angle}
-					opacity={opacity}
-				>
-					<Circle
-						x={250}
-						y={250}
-						r={100}
-						stroke="yellow"
-						fill="blue"
-						lineWidth={10}
-					/>
-
-					<Rectangle
-						x={0}
-						y={0}
-						width={500}
-						height={250}
-						fill="rgb(123, 233, 12)"
-						stroke="green"
-						lineWidth={5}
-						angle={Math.PI / 12}
-						pivotX={10}
-						pivotY={10}
-					/>
-
-					<Circle
-						x={100}
-						y={100}
-						r={50}
-						stroke="green"
-						fill="red"
-						opacity={0.5}
-					/>
-
-					<Circle
-						x={400}
-						y={100}
-						r={50}
-						stroke="green"
-						fill="red"
-						opacity={0.5}
-					/>
-
-					<Circle x={0} y={0} r={15} fill="red" />
-					<Circle x={50} y={50} r={15} fill="green" />
-
-					<AnimatedSprite
-						src="/src/wizard/Sprites/Attack1.png"
-						atlas={atlasAttack}
-						action="attack"
-						width={500}
-						height={500}
-					/>
-				</Group>
-			</Canvas>
-		</>
+			<AnimatedSprite
+				src="/src/wizard/Sprites/Run.png"
+				atlas={atlasRun}
+				action="run"
+				width={256}
+				height={256}
+				{...position}
+			/>
+		</Canvas>
 	);
 };
 
